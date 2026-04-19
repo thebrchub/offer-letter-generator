@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@layer base {
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    position: relative;
+    background: white;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+    background: white;
+  }
+
+  .input-field:focus {
+    border-color: #9ca3af;
+  }
+
+  .tiptap-editor .ProseMirror {
+    outline: none;
+    min-height: 200px;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .tiptap-editor .ProseMirror p {
+    margin: 0.25em 0;
+  }
+
+  .tiptap-editor .ProseMirror h2 {
+    font-weight: 700;
+    font-size: 1em;
+    margin: 0.75em 0 0.25em 0;
+  }
+
+  .tiptap-editor .ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin: 0.25em 0;
+  }
+
+  .tiptap-editor .ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin: 0.25em 0;
+  }
+
+  .tiptap-editor .ProseMirror li {
+    margin: 0.15em 0;
+  }
+
+  .letter-body p {
+    margin: 0.2em 0;
+    line-height: 1.5;
+  }
+
+  .letter-body h2 {
+    font-weight: 700;
+    font-size: 1em;
+    margin: 0.8em 0 0.2em 0;
+  }
+
+  .letter-body ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin: 0.2em 0;
+  }
+
+  .letter-body ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin: 0.2em 0;
+  }
+
+  .letter-body li {
+    margin: 0.1em 0;
+    line-height: 1.5;
+  }
+
+  .letter-body strong {
+    font-weight: 700;
+  }
+
+  .letter-body em {
+    font-style: italic;
+  }
+
+  .letter-body u {
+    text-decoration: underline;
+  }
+
+  .signature-canvas {
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+    cursor: crosshair;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .a4-page {
+    margin: 0;
+    box-shadow: none;
+  }
+}
+@import "tailwindcss";
+
+/* A4 page dimensions at 96dpi */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  position: relative;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input field utility */
+.input-field {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+  background: white;
+}
+.input-field:focus {
+  border-color: #9ca3af;
+}
+
+/* Rich text editor styles */
+.tiptap-editor .ProseMirror {
+  outline: none;
+  min-height: 200px;
+  padding: 12px;
+  font-size: 13px;
+}
+.tiptap-editor .ProseMirror p {
+  margin: 0.25em 0;
+}
+.tiptap-editor .ProseMirror h2 {
+  font-weight: 700;
+  font-size: 1em;
+  margin: 0.75em 0 0.25em 0;
+}
+.tiptap-editor .ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.25em 0;
+}
+.tiptap-editor .ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.25em 0;
+}
+.tiptap-editor .ProseMirror li {
+  margin: 0.15em 0;
+}
+
+/* Preview letter body styles */
+.letter-body p {
+  margin: 0.2em 0;
+  line-height: 1.5;
+}
+.letter-body h2 {
+  font-weight: 700;
+  font-size: 1em;
+  margin: 0.8em 0 0.2em 0;
+}
+.letter-body ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin: 0.2em 0;
+}
+.letter-body ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin: 0.2em 0;
+}
+.letter-body li {
+  margin: 0.1em 0;
+  line-height: 1.5;
+}
+.letter-body strong {
+  font-weight: 700;
+}
+.letter-body em {
+  font-style: italic;
+}
+.letter-body u {
+  text-decoration: underline;
+}
+
+/* Signature canvas */
+.signature-canvas {
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+  cursor: crosshair;
+}
+
+/* Print styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area, .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .a4-page {
+    margin: 0;
+    box-shadow: none;
+  }
+}
+
+/* Scrollbar styling for form panel */
+.form-panel::-webkit-scrollbar {
+  width: 6px;
+}
+.form-panel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.form-panel::-webkit-scrollbar-thumb {
+  background: #ccc;
+
+  border-radius: 3px;
+}
+.form-panel::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
