@@ -72,31 +72,21 @@ export async function exportToPdf(element) {
     footer.remove();
   }
 
-  // Extract watermark and make it fixed (repeats on every printed page)
-  // Look for the watermark div: has position:absolute, contains an img, covers the page
+  // Extract watermark info (image src + opacity) — we'll inject per-page copies after layout
   let watermarkDiv = styledClone.querySelector('[class*="absolute"][class*="inset-0"]');
   if (!watermarkDiv) {
-    // Fallback: find by inlined styles (absolute + has img child)
     watermarkDiv = Array.from(styledClone.children).find(
       (el) => el.style.position === 'absolute' && el.querySelector('img')
     ) || null;
   }
-  let watermarkHtml = '';
+  let watermarkImgSrc = '';
+  let watermarkImgStyle = '';
   if (watermarkDiv) {
-    const wmClone = watermarkDiv.cloneNode(true);
-    wmClone.style.position = 'fixed';
-    wmClone.style.top = '0';
-    wmClone.style.left = '0';
-    wmClone.style.right = '0';
-    wmClone.style.bottom = '0';
-    wmClone.style.width = '100%';
-    wmClone.style.height = '100%';
-    wmClone.style.display = 'flex';
-    wmClone.style.alignItems = 'center';
-    wmClone.style.justifyContent = 'center';
-    wmClone.style.pointerEvents = 'none';
-    wmClone.style.zIndex = '1';
-    watermarkHtml = wmClone.outerHTML;
+    const wmImg = watermarkDiv.querySelector('img');
+    if (wmImg) {
+      watermarkImgSrc = wmImg.src || wmImg.getAttribute('src') || '';
+      watermarkImgStyle = wmImg.style.cssText || '';
+    }
     watermarkDiv.remove();
   }
 
@@ -197,21 +187,33 @@ export async function exportToPdf(element) {
     }
     .print-header-space { height: 10mm; }
     .print-footer-space { height: 24mm; }
+    .watermark-layer {
+      position: absolute;
+      left: 0;
+      width: 210mm;
+      height: 297mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
   </style>
 </head>
 <body>
   <!-- Fixed elements repeat on every printed page -->
   ${topStripHtml}
-  ${watermarkHtml}
   ${footerHtml}
 
-  <table class="print-table">
-    <thead><tr><td><div class="print-header-space"></div></td></tr></thead>
-    <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
-    <tbody><tr><td style="position:relative;z-index:2;">
-      ${styledClone.outerHTML}
-    </td></tr></tbody>
-  </table>
+  <div id="page-wrapper" style="position:relative;">
+    <table class="print-table">
+      <thead><tr><td><div class="print-header-space"></div></td></tr></thead>
+      <tfoot><tr><td><div class="print-footer-space"></div></td></tr></tfoot>
+      <tbody><tr><td style="position:relative;z-index:2;">
+        ${styledClone.outerHTML}
+      </td></tr></tbody>
+    </table>
+  </div>
 </body>
 </html>`);
   iframeDoc.close();
@@ -222,6 +224,26 @@ export async function exportToPdf(element) {
     setTimeout(resolve, 3000);
   });
   await new Promise((r) => setTimeout(r, 800));
+
+  // Inject watermark on every page by measuring content height
+  if (watermarkImgSrc) {
+    const iframeBody = iframeDoc.body;
+    const wrapper = iframeDoc.getElementById('page-wrapper');
+    const totalHeight = iframeBody.scrollHeight;
+    const pageHeightPx = iframeDoc.documentElement.clientHeight || (297 * 96 / 25.4);
+    const numPages = Math.ceil(totalHeight / pageHeightPx);
+
+    for (let i = 0; i < numPages; i++) {
+      const wmDiv = iframeDoc.createElement('div');
+      wmDiv.className = 'watermark-layer';
+      wmDiv.style.top = (i * pageHeightPx) + 'px';
+      const wmImg = iframeDoc.createElement('img');
+      wmImg.src = watermarkImgSrc;
+      wmImg.style.cssText = watermarkImgStyle;
+      wmDiv.appendChild(wmImg);
+      wrapper.appendChild(wmDiv);
+    }
+  }
 
   iframe.contentWindow.focus();
   iframe.contentWindow.print();
